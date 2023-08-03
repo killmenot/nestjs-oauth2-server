@@ -1,6 +1,6 @@
 {
   "name": "@killmenot/nestjs-oauth2-server",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A Nestjs wrapper for oauth2-server",
   "main": "index.js",
   "types": "index.d.ts",
