@@ -1,11 +1,20 @@
 {
-  "name": "@t00nday/nestjs-oauth2-server",
+  "name": "@killmenot/nestjs-oauth2-server",
   "version": "0.0.4",
   "description": "A Nestjs wrapper for oauth2-server",
   "main": "index.js",
   "type": "module",
   "types": "index.d.ts",
-  "author": "B'Tunde Aromire",
+  "author": "Alexey Kucherenko",
+  "license": "MIT",
+  "homepage": "https://github.com/killmenot/nestjs-oauth2-server#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/killmenot/nestjs-oauth2-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/killmenot/nestjs-oauth2-server/issues"
+  },
   "keywords": [
     "nestjs oauth2 server",
     "nestjs oauth2",
@@ -71,13 +80,11 @@
     "ts-jest": "27.1.4",
     "typescript": "4.6.3"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/toondaey/nestjs-oauth2-server.git"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/toondaey/nestjs-oauth2-server/issues"
+  "peerDependencies": {
+    "@nestjs/common": "^8.0.0",
+    "oauth2-server": "3.1.1",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^7.0.0"
   },
   "husky": {
     "hooks": {
@@ -85,13 +92,6 @@
       "pre-commit": "lint-staged"
     }
   },
-  "peerDependencies": {
-    "@nestjs/common": "^8.0.0",
-    "oauth2-server": "3.1.1",
-    "reflect-metadata": "^0.1.12",
-    "rxjs": "^7.0.0"
-  },
-  "homepage": "https://github.com/toondaey/nestjs-oauth2-server#readme",
   "publishConfig": {
     "access": "public"
   }
