@@ -2,21 +2,23 @@
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-  <img src="https://github.com/toondaey/nestjs-oauth2-server/blob/master/oauth2.png?raw=true" width="120" alt="OAuth2 Logo" />
+  <img src="https://github.com/killmenot/nestjs-oauth2-server/blob/master/oauth2.png?raw=true" width="120" alt="OAuth2 Logo" />
 </p>
 
-<p align='center'>
-    <a href="https://www.npmjs.com/package/@t00nday/nestjs-oauth2-server" target='_blank'><img alt="npm" src="https://img.shields.io/npm/dm/@t00nday/nestjs-oauth2-server" alt="NPM Downloads"></a>
-    <a href="https://coveralls.io/github/toondaey/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="Coveralls github" src="https://img.shields.io/coveralls/github/toondaey/nestjs-oauth2-server"></a>
-    <a href="https://npmjs.com/@t00nday/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="npm version" src="https://img.shields.io/npm/v/@t00nday/nestjs-oauth2-server?label=NPM&logo=NPM"></a>
-    <a href="https://npmjs.com/@t00nday/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="LICENCE" src="https://img.shields.io/npm/l/@t00nday/nestjs-oauth2-server"></a>
-    <a href="https://circleci.com/gh/toondaey/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="CircleCI build" src="https://img.shields.io/circleci/build/gh/toondaey/nestjs-oauth2-server/master"></a>
-    <a href="https://www.npmjs.com/package/@t00nday/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="synk vulnerabilities" src="https://img.shields.io/snyk/vulnerabilities/npm/@t00nday/nestjs-oauth2-server"></a>
+<p align="center">
+    <a href="https://www.npmjs.com/package/@killmenot/nestjs-oauth2-server" target='_blank'><img alt="npm" src="https://img.shields.io/npm/dm/@killmenot/nestjs-oauth2-server" alt="NPM Downloads"></a>
+    <a href="https://coveralls.io/github/killmenot/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="Coveralls github" src="https://img.shields.io/coveralls/github/killmenot/nestjs-oauth2-server"></a>
+    <a href="https://npmjs.com/@killmenot/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="npm version" src="https://img.shields.io/npm/v/@killmenot/nestjs-oauth2-server?label=NPM&logo=NPM"></a>
+    <a href="https://npmjs.com/@killmenot/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="LICENCE" src="https://img.shields.io/npm/l/@killmenot/nestjs-oauth2-server"></a>
+    <a href="https://circleci.com/gh/killmenot/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="CircleCI build" src="https://img.shields.io/circleci/build/gh/killmenot/nestjs-oauth2-server/master"></a>
+    <a href="https://www.npmjs.com/package/@killmenot/nestjs-oauth2-server" target="_blank" rel="noopener noreferrer"><img alt="synk vulnerabilities" src="https://img.shields.io/snyk/vulnerabilities/npm/@killmenot/nestjs-oauth2-server"></a>
 </p>
 
 <p>
 A <a href="https://nestjs.com" target='_blank'>Nestjs</a> wrapper module for the <a href='https://oauth2-server.readthedocs.io/en/latest/index.html' target='_blank'>oauth2-server</a> package.
 </p>
+
+<p>This project is a fork of <a href="https://github.com/toondaey/nestjs-oauth2-server" target='_blank'>toondaey/nestjs-oauth2-server</a></p>
 
 <details>
 <summary><strong>Table of content</strong> (click to expand)</summary>
@@ -35,11 +37,11 @@ A <a href="https://nestjs.com" target='_blank'>Nestjs</a> wrapper module for the
 
 Installation is as simple as running:
 
-`npm install @t00nday/nestjs-oauth2-server`
+`npm install @killmenot/nestjs-oauth2-server`
 
 or
 
-`yarn add @t00nday/nestjs-oauth2-server`.
+`yarn add @killmenot/nestjs-oauth2-server`.
 
 ## Configuration
 
@@ -49,7 +51,7 @@ or
 
 ```ts
 import { Module } from '@nestjs/common';
-import { OAuth2ServerModule } from '@t00nday/nestjs-oauth2-server';
+import { OAuth2ServerModule } from '@killmenot/nestjs-oauth2-server';
 
 @Module({
     imports: [
@@ -63,7 +65,7 @@ export class AppModule {}
 In addition to the above the, **oauth2-server** requires a [model](https://oauth2-server.readthedocs.io/en/latest/model/overview.html) to create the server. This can be provided as a service from any part of the application. This should be able to fetch data about clients, users, token, and authorization codes. This **MUST** be a service decorated with the `OAuth2Model` decorator.
 
 ```ts
-import { OAuth2Model } from '@t00nday/nestjs-oauth2-server';
+import { OAuth2Model } from '@killmenot/nestjs-oauth2-server';
 
 @OAuth2Model()
 export class OAuth2ModelService
@@ -81,7 +83,7 @@ The module also provides some nifty decorators to help with configuring the oaut
 
 ```ts
 import { Controller } from '@nestjs/common';
-import {} from '@t00nday/nestjs-oauth2-server';
+import {} from '@killmenot/nestjs-oauth2-server';
 
 @Controller()
 export class ExampleController {
@@ -121,7 +123,7 @@ import { Module } from '@nestjs/common';
 import {
     OAuth2ServerModule,
     IOAuth2ServerModuleOptions,
-} from '@t00nday/nestjs-oauth2-server';
+} from '@killmenot/nestjs-oauth2-server';
 
 @Module({
     imports: [
@@ -142,7 +144,7 @@ export class AppModule {}
 import {
     IOAuth2ServerModuleOptions,
     IOAuth2ServerOptionsFactory,
-} from '@t00nday/nestjs-oauth2-server';
+} from '@killmenot/nestjs-oauth2-server';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -158,7 +160,7 @@ The `OAuth2ServerConfigService` **SHOULD** implement the `IOAuth2ServerOptionsFa
 
 ```ts
 import { Module } from '@nestjs/common';
-import { OAuth2ServerModule } from '@t00nday/nestjs-oauth2-server';
+import { OAuth2ServerModule } from '@killmenot/nestjs-oauth2-server';
 import { OAuth2ServerConfigService } from './oauth2-server-config.service.ts';
 
 @Module({
