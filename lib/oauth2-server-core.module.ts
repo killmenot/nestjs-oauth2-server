@@ -1,13 +1,5 @@
-import {
-    Type,
-    Module,
-    Global,
-    Provider,
-    DynamicModule,
-} from '@nestjs/common';
-import { ServerOptions } from 'oauth2-server';
-import OAuth2Server = require('oauth2-server');
-
+import { Type, Module, Global, Provider, DynamicModule } from '@nestjs/common';
+import OAuth2Server, { ServerOptions } from 'oauth2-server';
 import {
     OAuth2ServerTokenGuard,
     OAuth2ServerAuthorizationGuard,
@@ -20,51 +12,44 @@ import {
 } from './interfaces';
 import {
     OAUTH2_SERVER,
-    OAUTH2_SERVER_MODEL_PROVIDER,
     OAUTH2_SERVER_OPTIONS_TOKEN,
+    OAUTH2_SERVER_MODEL_PROVIDER_TOKEN,
 } from './oauth2-server.constants';
-import { ModelProviderModule } from './model-provider.module';
 
 @Global()
-@Module({
-    imports: [ModelProviderModule],
-    providers: [
-        {
-            provide: OAUTH2_SERVER_OPTIONS_TOKEN,
-            useValue: {},
-        },
-        {
-            provide: OAUTH2_SERVER,
-            useFactory: (
-                options: IOAuth2ServerModuleOptions,
-                model: ServerOptions['model'],
-            ): OAuth2Server =>
-                new OAuth2Server(
-                    Object.assign({}, options, { model }),
-                ),
-            inject: [
-                OAUTH2_SERVER_OPTIONS_TOKEN,
-                OAUTH2_SERVER_MODEL_PROVIDER,
-            ],
-        },
-        OAuth2ServerTokenGuard,
-        OAuth2ServerAuthorizationGuard,
-        OAuth2ServerAuthenticationGuard,
-    ],
-    exports: [OAUTH2_SERVER],
-})
+@Module({})
 export class OAuth2ServerCoreModule {
-    static forRoot(
-        options: IOAuth2ServerModuleOptions,
-    ): DynamicModule {
+    static forRoot(options: IOAuth2ServerModuleOptions): DynamicModule {
+        const { model: modelProvider, ...otherOptions } = options;
+
         return {
             module: OAuth2ServerCoreModule,
             providers: [
                 {
                     provide: OAUTH2_SERVER_OPTIONS_TOKEN,
-                    useValue: options,
+                    useValue: otherOptions,
                 },
+                {
+                    provide: OAUTH2_SERVER_MODEL_PROVIDER_TOKEN,
+                    useClass: modelProvider,
+                },
+                {
+                    provide: OAUTH2_SERVER,
+                    useFactory: (
+                        options: IOAuth2ServerModuleOptions,
+                        model: ServerOptions['model'],
+                    ): OAuth2Server =>
+                        new OAuth2Server(Object.assign({}, options, { model })),
+                    inject: [
+                        OAUTH2_SERVER_OPTIONS_TOKEN,
+                        OAUTH2_SERVER_MODEL_PROVIDER_TOKEN,
+                    ],
+                },
+                OAuth2ServerTokenGuard,
+                OAuth2ServerAuthorizationGuard,
+                OAuth2ServerAuthenticationGuard,
             ],
+            exports: [OAUTH2_SERVER],
         };
     }
 
@@ -73,13 +58,32 @@ export class OAuth2ServerCoreModule {
     ): DynamicModule {
         return {
             module: OAuth2ServerCoreModule,
-            providers: [...this.createAsyncProviders(options)],
+            providers: [
+                ...(options.extraProviders || []),
+                ...this.createAsyncProviders(options),
+                {
+                    provide: OAUTH2_SERVER,
+                    useFactory: (
+                        options: IOAuth2ServerModuleOptions,
+                        model: ServerOptions['model'],
+                    ): OAuth2Server =>
+                        new OAuth2Server(Object.assign({}, options, { model })),
+                    inject: [
+                        OAUTH2_SERVER_OPTIONS_TOKEN,
+                        OAUTH2_SERVER_MODEL_PROVIDER_TOKEN,
+                    ],
+                },
+                OAuth2ServerTokenGuard,
+                OAuth2ServerAuthorizationGuard,
+                OAuth2ServerAuthenticationGuard,
+            ],
             imports: options.imports || [],
+            exports: [OAUTH2_SERVER],
         };
     }
 
     private static createAsyncProviders(
-        options: Omit<IOAuth2ServerModuleAsyncOptions, 'model'>,
+        options: IOAuth2ServerModuleAsyncOptions,
     ): Provider[] {
         if (options.useFactory || options.useExisting) {
             return [this.createAsyncOptionsProvider(options)];
@@ -91,7 +95,7 @@ export class OAuth2ServerCoreModule {
     }
 
     private static createAsyncOptionsProvider(
-        options: Omit<IOAuth2ServerModuleAsyncOptions, 'model'>,
+        options: IOAuth2ServerModuleAsyncOptions,
     ): Provider {
         if (options.useFactory) {
             return {

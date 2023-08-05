@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "types": ["jest", "node"]
+  },
+  "include": [
+    "tests/**/*.test.ts",
+    "tests/**/*.spec.ts",
+    "tests/**/*.d.ts"
+  ]
+}

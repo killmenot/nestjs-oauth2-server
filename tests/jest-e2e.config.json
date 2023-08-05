@@ -4,7 +4,11 @@
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.[tj]s$": [
+      "ts-jest", {
+        "tsconfig": "./tsconfig.spec.json"
+      }
+    ]
   },
   "collectCoverageFrom": [
     "lib/**/*.{js,jsx,tsx,ts}",

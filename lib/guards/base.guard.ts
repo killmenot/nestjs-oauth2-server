@@ -1,4 +1,4 @@
-import {
+import OAuth2Server, {
     Token,
     OAuthError,
     TokenOptions,
@@ -15,10 +15,8 @@ import {
     ExecutionContext,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import OAuth2Server = require('oauth2-server');
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, mergeMap } from 'rxjs/operators';
-
 import {
     OAUTH2_SERVER,
     OAUTH2_METHOD_OPTIONS_METADATA,
@@ -36,25 +34,14 @@ export abstract class BaseGuard {
 
         return this.action(
             new OAuth2Request(request),
-            new OAuth2Response(
-                this.getResponse<Record<string, any>>(context),
-            ),
+            new OAuth2Response(this.getResponse<Record<string, any>>(context)),
             this.getOptions(context),
         ).pipe(
             catchError((error: OAuthError) => this.throwError(error)),
-            mergeMap(
-                (
-                    tokenOrAuthorizationCode:
-                        | Token
-                        | AuthorizationCode,
-                ) => {
-                    this.includeOauthInRequest(
-                        request,
-                        tokenOrAuthorizationCode,
-                    );
-                    return of(true);
-                },
-            ),
+            mergeMap((tokenOrAuthorizationCode: Token | AuthorizationCode) => {
+                this.includeOauthInRequest(request, tokenOrAuthorizationCode);
+                return of(true);
+            }),
         );
     }
 
@@ -67,10 +54,7 @@ export abstract class BaseGuard {
     }
 
     private getOptions<
-        T extends
-            | TokenOptions
-            | AuthorizeOptions
-            | AuthenticateOptions,
+        T extends TokenOptions | AuthorizeOptions | AuthenticateOptions,
     >(context: ExecutionContext): T {
         return this.reflector.get<T, symbol>(
             OAUTH2_METHOD_OPTIONS_METADATA,
@@ -79,9 +63,7 @@ export abstract class BaseGuard {
     }
 
     protected throwError(error: OAuthError): Observable<never> {
-        return throwError(
-            new HttpException(error.message, error.code),
-        );
+        return throwError(new HttpException(error.message, error.code));
     }
 
     protected abstract action(
@@ -90,9 +72,7 @@ export abstract class BaseGuard {
         options?: Parameters<OAuth2Server[keyof OAuth2Server]>[2],
     ): Observable<Token | AuthorizationCode>;
 
-    protected abstract includeOauthInRequest<
-        T extends Record<string, any>,
-    >(
+    protected abstract includeOauthInRequest<T extends Record<string, any>>(
         request: T,
         tokenOrAuthorizationCode: Token | AuthorizationCode,
     ): void;

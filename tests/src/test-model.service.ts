@@ -7,7 +7,7 @@ import {
     AuthorizationCodeModel,
     RequestAuthenticationModel,
 } from 'oauth2-server';
-import moment = require('moment');
+import moment from 'moment';
 import { Inject, Injectable, Optional } from '@nestjs/common';
 
 import {
@@ -16,20 +16,20 @@ import {
     REFRESH_TOKEN,
     AUTHORIZATION_CODE,
 } from './data';
-import { OAuth2Model } from '../../lib';
 import { RESPONSES } from './test.constants';
 import { ITestExpectedResponses } from './test.interfaces';
 
-@OAuth2Model()
+@Injectable()
 export class TestModelService
     implements
         RequestAuthenticationModel,
         AuthorizationCodeModel,
-        RefreshTokenModel {
+        RefreshTokenModel
+{
     constructor(
         @Optional()
         @Inject(RESPONSES)
-        readonly testResponses: ITestExpectedResponses,
+        readonly testResponses?: ITestExpectedResponses,
     ) {}
 
     async getAccessToken(): Promise<Token | false> {
@@ -74,9 +74,7 @@ export class TestModelService
             : AUTHORIZATION_CODE;
     }
 
-    async saveAuthorizationCode(): Promise<
-        AuthorizationCode | false
-    > {
+    async saveAuthorizationCode(): Promise<AuthorizationCode | false> {
         return this.testResponses &&
             this.testResponses.authorizationCode !== undefined
             ? this.testResponses.authorizationCode

@@ -1,10 +1,9 @@
-import request = require('supertest');
+import request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TestController } from '../src/test.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 
 import { TestModule } from '../src/test.module';
-import { TestModelService } from '../src/test-model.service';
 import { ITestExpectedResponses } from '../src/test.interfaces';
 import { DataProviderModule } from '../src/data-provider.module';
 
@@ -16,12 +15,11 @@ describe('e2e', () => {
     beforeEach(async () => {
         testResponses = {};
         module = await Test.createTestingModule({
-            controllers: [TestController],
             imports: [
-                TestModule.withUseClassForRootAsync(),
                 DataProviderModule.register(testResponses as any),
+                TestModule.withUseClassForRootAsync(),
             ],
-            providers: [TestModelService],
+            controllers: [TestController],
         }).compile();
 
         app = module.createNestApplication();
@@ -130,8 +128,7 @@ describe('e2e', () => {
                 .set({
                     Authorization:
                         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-                    'Content-Type':
-                        'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 })
                 .send({
                     client_id: '12345678',
