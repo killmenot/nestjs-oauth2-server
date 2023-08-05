@@ -45,37 +45,46 @@ or
 
 ## Configuration
 
-1. Include the module as a dependency in the module where pdf will be generated:
+1. **oauth2-server** requires a [model](https://oauth2-server.readthedocs.io/en/latest/model/overview.html) to create the server. This can be provided as a service from any part of the application. This should be able to fetch data about clients, users, token, and authorization codes.
+
+```ts
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class OAuth2ModelService implements RequestAuthenticationModel {
+    getAccessToken() {
+        // ...
+    }
+
+    verifyScope() {
+        // ...
+    }
+
+    // ...
+}
+```
+
+2. Include the module as a dependency in the module where pdf will be generated:
 
 `app.module.ts`
 
 ```ts
 import { Module } from '@nestjs/common';
 import { OAuth2ServerModule } from '@killmenot/nestjs-oauth2-server';
+import { OAuth2ModelService } from './oauth2-model.service';
+
 
 @Module({
     imports: [
         // ... other modules
-        OAuth2ServerModule.forRoot({}),
+        OAuth2ServerModule.forRoot({
+            model: OAuth2ModelService,
+        }),
     ],
 })
 export class AppModule {}
 ```
 
-In addition to the above the, **oauth2-server** requires a [model](https://oauth2-server.readthedocs.io/en/latest/model/overview.html) to create the server. This can be provided as a service from any part of the application. This should be able to fetch data about clients, users, token, and authorization codes. This **MUST** be a service decorated with the `OAuth2Model` decorator.
-
-```ts
-import { OAuth2Model } from '@killmenot/nestjs-oauth2-server';
-
-@OAuth2Model()
-export class OAuth2ModelService
-    implements RequestAuthenticationModel {
-    getAccessToken() {}
-
-    verifyScope() {}
-    // ...
-}
-```
 
 ## Usage
 
@@ -83,7 +92,13 @@ The module also provides some nifty decorators to help with configuring the oaut
 
 ```ts
 import { Controller } from '@nestjs/common';
-import {} from '@killmenot/nestjs-oauth2-server';
+import {
+    OAuth2Authenticate,
+    OAuth2Authorize,
+    OAuth2Authorization,
+    OAuth2RenewToken,
+    OAuth2Token,
+} from '@killmenot/nestjs-oauth2-server';
 
 @Controller()
 export class ExampleController {
@@ -123,13 +138,21 @@ import { Module } from '@nestjs/common';
 import {
     OAuth2ServerModule,
     IOAuth2ServerModuleOptions,
+    OAUTH2_SERVER_MODEL_PROVIDER_TOKEN,
 } from '@killmenot/nestjs-oauth2-server';
+import { OAuth2ModelService } from './oauth2-model.service';
 
 @Module({
     imports: [
         // ... other modules
         OAuth2ServerModule.forRootAsync({
             useFactory: (): IOAuth2ServerModuleOptions => ({}),
+            extraProviders: [
+                {
+                    provide: OAUTH2_SERVER_MODEL_PROVIDER_TOKEN,
+                    useClass: OAuth2ModelService,
+                },
+            ],
         }),
     ],
 })
@@ -148,8 +171,7 @@ import {
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class OAuth2ServerConfigService
-    implements IOAuth2ServerOptionsFactory {
+export class OAuth2ServerConfigService implements IOAuth2ServerOptionsFactory {
     createOAuth2ServerOptions(): IOAuth2ServerModuleOptions {
         return {};
     }
@@ -162,12 +184,19 @@ The `OAuth2ServerConfigService` **SHOULD** implement the `IOAuth2ServerOptionsFa
 import { Module } from '@nestjs/common';
 import { OAuth2ServerModule } from '@killmenot/nestjs-oauth2-server';
 import { OAuth2ServerConfigService } from './oauth2-server-config.service.ts';
+import { OAuth2ModelService } from './oauth2-model.service';
 
 @Module({
     imports: [
         // ... other modules
         OAuth2ServerModule.forRootAsync({
             useClass: OAuth2ServerConfigService,
+            extraProviders: [
+                {
+                    provide: OAUTH2_SERVER_MODEL_PROVIDER_TOKEN,
+                    useClass: OAuth2ModelService,
+                },
+            ],
         }),
     ],
 })
